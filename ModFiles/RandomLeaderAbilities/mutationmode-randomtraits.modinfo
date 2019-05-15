@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mod id="55019f21-e9af-44e1-b6d4-f6a92b0d1fb5" version="1.2">
+  <Properties>
+    <Name>Mutation Mode - Random Leader Abilities</Name>
+    <Description><![CDATA[A Mutation mode for Civ 6 game. When you start the game, random abilities from other leader is assigned to yours instead of the default one. No OP or uselessness or balance guaranteed.
+
+The AI/other players leader abilities are changed too, so be sure to check them out (in the Civilopedia) when you meet them.
+
+[COLOR_Green]How random works[/ENDCOLOR]
+After this update (1.2), you can get consistent ability swap everyday even if you start new game or load your save game. However, you get new random abilities every new day. You can change that by following these steps:
+
+- Go to your mod folder, it should be at steamapps\workshop\content\289070\1740975301.
+- You should see mutation-randomizer.sql file, open it with Notepad or any editor app you like.
+- Follow the instruction there to choose 1 of the 3 options explained there:
+
+	+ Option 1: Use your own seed. You can also use this if you want to continue your save from yesterday. For example, today is May 15th 2019, but your save game is from May 13th 2019, you can use "20190513" as the seed and you can get the same game.
+	+ Option 2: Use random seed. This is the same as before the update: you get completely new ability whenever you load/start new game.
+	+ Option 3: Use current system date as seed. Abilities change everyday. If you see Teddy with Alexander's ability, that mean for entire day if you choose Teddy, you get Alexander's ability. You can actually share the seed using today date and use Option 1 if you want to replay.
+	
+- Please remember to uncomment (remove the --) ONLY ONE INSERT line and comment (put the --) before any other lines.
+
+Known issue: The random is not perfect because of technical limitations. Multiple leaders may get the same ability. If you are using option 3 and experience bad repetition on one day, please switch to option 1 and change the seed for that day.]]></Description>
+    <Authors>Luke Vo</Authors>
+    <CompatibleVersions>2.0</CompatibleVersions>
+	<Teaser>Assign a random leader ability for your civ when you start a new game.</Teaser>
+  </Properties>
+  <InGameActions>
+    <UpdateDatabase id="MutationRandomizer">
+	  <Properties>
+        <LoadOrder>1</LoadOrder>
+      </Properties>
+      <File>mutation-randomizer.sql</File>
+    </UpdateDatabase>
+    <UpdateDatabase id="MutationRandomTraits">
+	  <Properties>
+        <LoadOrder>125</LoadOrder>
+      </Properties>
+      <File>mutationmoderandomtraits.sql</File>
+    </UpdateDatabase>
+  </InGameActions>
+  <Files>
+    <File>mutationmoderandomtraits.sql</File>
+	<File>mutation-randomizer.sql</File>	
+  </Files>
+</Mod>

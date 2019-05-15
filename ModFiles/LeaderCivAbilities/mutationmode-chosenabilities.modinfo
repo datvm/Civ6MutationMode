@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mod id="c6b532e5-46f1-4dd1-9c78-d68dc75f1082" version="1.2">
+  <Properties>
+    <Name>Mutation Mode - Civ and Leader Abilities</Name>
+    <Description><![CDATA[A Mutation Mode for Civ 6. This mod is the 2nd release after the Random Leader Abilities. To configure this mod, you need a separated (open source) app. You can download it here: <link placeholder>.]]></Description>
+    <Authors>Luke Vo</Authors>
+    <CompatibleVersions>2.0</CompatibleVersions>
+	<Teaser>Assign any leader and civ abilities for your civ.</Teaser>
+  </Properties>
+  <InGameActions>
+    <UpdateDatabase id="MutationChosenAbilities">
+	  <Properties>
+        <LoadOrder>125</LoadOrder>
+      </Properties>
+      <File>mutationmodechosenabilities.sql</File>
+    </UpdateDatabase>
+  </InGameActions>
+  <Files>
+    <File>mutationmodechosenabilities.sql</File>
+  </Files>
+</Mod>

@@ -2,23 +2,96 @@
 using Microsoft.EntityFrameworkCore;
 using MutationMode.UI.Models.Entities;
 using MutationMode.UI.Models.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace MutationMode.UI.Models
 {
 
     public class DataConnector
     {
+        public static readonly string ProgramFolder = Path.GetDirectoryName(typeof(DataConnector).Assembly.Location);
 
         AppOptions options = AppOptions.Instance;
 
         IDictionary<string, string> gameTexts;
 
-        public async Task LoadGameTextAsync()
+        public void CompressTextData(List<LeaderWithTraitsViewModel> leaders, List<CivWithTraitsViewModel> civs)
+        {
+            var fullTexts = new Dictionary<string, string>();
+
+            var texts = JsonConvert.DeserializeObject<Dictionary<string, string>>(
+                File.ReadAllText(@"D:\Temp\texts1.json"));
+            foreach (var text in texts)
+            {
+                fullTexts[text.Key] = text.Value;
+            }
+
+            texts = JsonConvert.DeserializeObject<Dictionary<string, string>>(
+                File.ReadAllText(@"D:\Temp\texts2.json"));
+            foreach (var text in texts)
+            {
+                fullTexts[text.Key] = text.Value;
+            }
+
+            var neededValues = new Dictionary<string, string>();
+            Action<string> tryAdd = key =>
+            {
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    return;
+                }
+
+                if (!fullTexts.TryGetValue(key, out var result))
+                {
+                    Debug.WriteLine("Missing: " + key);
+                    return;
+                }
+
+                neededValues[key] = result;
+            };
+            
+            foreach (var leader in leaders)
+            {
+                tryAdd(leader.Name);
+
+                foreach (var trait in leader.LeaderTraits)
+                {
+                    tryAdd(trait.Name);
+                    tryAdd(trait.Description);
+                }
+            }
+
+            foreach (var civ in civs)
+            {
+                tryAdd(civ.Name);
+                tryAdd(civ.Description);
+
+                foreach (var trait in civ.CivilizationTraits)
+                {
+                    tryAdd(trait.Name);
+                    tryAdd(trait.Description);
+                }
+            }
+
+            File.WriteAllText(@"D:\Temp\texts-cache.json", JsonConvert.SerializeObject(neededValues));
+        }
+
+        public void LoadGameTexts()
+        {
+            var textFile = Path.Combine(ProgramFolder, "texts-cache.json");
+            this.gameTexts = JsonConvert.DeserializeObject<Dictionary<string, string>>(
+                File.ReadAllText(textFile));
+        }
+
+        public async Task LoadGameText1Async()
         {
             using (var dc = new LocalizationContext(
                 this.GetConnectionStringFromFile(this.options.CacheDebugLocalization)))
@@ -27,6 +100,54 @@ namespace MutationMode.UI.Models
                     .ToListAsync())
                     .ToDictionary(q => q.Tag, q => q.Text);
             }
+
+            File.WriteAllText(@"D:\Temp\texts1.json", JsonConvert.SerializeObject(this.gameTexts));
+        }
+
+        public void LoadGameText2()
+        {
+            this.gameTexts = new Dictionary<string, string>();
+
+            const string Folder = @"F:\Game\SteamLibrary\steamapps\common\Sid Meier's Civilization VI\";
+
+            var counter = 0;
+            var files = Directory.GetFiles(Folder, "*.xml", SearchOption.AllDirectories);
+            foreach (var file in files)
+            {
+                try
+                {
+                    Debug.WriteLine($"{++counter}/{files.Length}: {file}");
+
+                    var xmlDoc = new XmlDocument();
+                    xmlDoc.Load(file);
+
+                    Action<string> scanTag = tagName =>
+                    {
+                        var englishTexts = xmlDoc.DocumentElement.GetElementsByTagName(tagName);
+
+                        foreach (XmlElement englishText in englishTexts)
+                        {
+                            var rows = englishText.GetElementsByTagName("Row");
+
+                            foreach (XmlElement row in rows)
+                            {
+                                this.gameTexts[row.GetAttribute("Tag")] = row.GetElementsByTagName("Text")[0].InnerText;
+                            }
+                        }
+                    };
+
+                    scanTag("BaseGameText");
+                    scanTag("EnglishText");
+                    scanTag("LocalizedText");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
+
+            }
+
+            File.WriteAllText(@"D:\Temp\texts2.json", JsonConvert.SerializeObject(this.gameTexts));
         }
 
         public async Task<List<LeaderWithTraitsViewModel>> GetLeadersWithTraitsAsync(bool getValidOnly)
@@ -107,7 +228,7 @@ namespace MutationMode.UI.Models
         }
 
         public List<T> LookupLeaderTexts<T>(List<T> leaders)
-            where T: LeaderViewModel
+            where T : LeaderViewModel
         {
             foreach (var leader in leaders)
             {

@@ -51,7 +51,7 @@ namespace MutationMode.UI.Models.ViewModels
             this.ValidateCacheLocation();
 
             this.connector = new DataConnector();
-            await this.connector.LoadGameTextAsync();
+            this.connector.LoadGameTexts();
 
             this.Leaders = new ObservableCollection<LeaderTraitSwap>((await this.connector.GetLeadersWithTraitsAsync(true))
                 .Select(q => new LeaderTraitSwap()
@@ -68,6 +68,10 @@ namespace MutationMode.UI.Models.ViewModels
                     OriginalTraits = q.CivilizationTraits,
                     SwappingTraits = new ObservableCollection<TraitViewModelWithCheck>(),
                 }));
+
+            //this.connector.CompressTextData(
+            //    this.Leaders.Select(q => q.Leader).Cast<LeaderWithTraitsViewModel>().ToList(),
+            //    this.Civs.Select(q => q.Civilization).Cast<CivWithTraitsViewModel>().ToList());
         }
 
         private void InitializeMapper()

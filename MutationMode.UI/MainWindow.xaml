@@ -5,8 +5,98 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MutationMode.UI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Mutation Mode - Civ and Leader Abilities"
+        Loaded="Window_Loaded" Closing="Window_Closing"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="Padding" Value="15 5" />
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="5" />
+        </Style>
+    </Window.Resources>
+
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+
+        <ToolBarTray Grid.ColumnSpan="2">
+            <ToolBar>
+                <Button Content="Save"></Button>
+            </ToolBar>
+        </ToolBarTray>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <ListView x:Name="lstCivilizations" ItemsSource="{Binding Civs}" SelectionChanged="OnItemChanged" GotFocus="OnItemListGotFocus">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" Foreground="{Binding ForegroundColor}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <ListView x:Name="lstLeaders" ItemsSource="{Binding Leaders}" Grid.Row="1"  SelectionChanged="OnItemChanged" GotFocus="OnItemListGotFocus">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" Foreground="{Binding ForegroundColor}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+
+        <ContentControl IsEnabled="{Binding ShouldEnableEdit}" Grid.Row="1" Grid.Column="1">
+            <Grid DataContext="{Binding SelectingItem}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="2*" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="{Binding Path=., TargetNullValue='Please select an item to the left'}" Grid.Row="0" />
+                <TextBlock Text="Current Changes:"  Grid.Row="1"/>
+                <ListView ItemsSource="{Binding SwappingTraits}"  Grid.Row="2" VerticalAlignment="Stretch">
+                    <ListView.ItemTemplate>
+                        <ItemContainerTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox IsChecked="{Binding Checking}" VerticalAlignment="Center" />
+                                <Label Content="{Binding}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </ItemContainerTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <TextBlock Text="Note: if it is empty, they keep their original abilities. But if you add anything, they will lose it unless you manually add the original ones in." TextWrapping="Wrap"  Grid.Row="3"/>
+
+                <StackPanel Orientation="Horizontal"  Grid.Row="4">
+                    <Button Content="Add Abilities" Click="OnAddTraitsButtonClick" />
+                    <Button Content="Remove Selected" Click="OnRemoveSelectedTraitsButtonClick" />
+                    <Button Content="Add Originals" Click="OnAddOriginalButtonClick" />
+
+                    <TextBlock Text="Select: " VerticalAlignment="Center" />
+                    <Button Content="All" Click="OnSelectAllButtonClick"/>
+                    <Button Content="None" Click="OnSelectNoneButtonClick" />
+                    <Button Content="Invert" Click="OnInvertSelectButtonClick" />
+                </StackPanel>
+
+                <Label Content="Original Abilities:"  Grid.Row="5"/>
+                <ListView ItemsSource="{Binding OriginalTraits}" Grid.Row="6" VerticalAlignment="Stretch"/>
+            </Grid>
+        </ContentControl>
+
     </Grid>
 </Window>

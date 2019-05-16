@@ -1,0 +1,39 @@
+﻿<Window x:Class="MutationMode.UI.TraitsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MutationMode.UI"
+        mc:Ignorable="d"
+        Title="TraitsWindow" WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+
+        <ListView x:Name="lstItems" Grid.RowSpan="2" Margin="5" SelectionChanged="OnItemSelected" SelectionMode="Multiple" />
+
+        <ListView x:Name="lstTraits" Grid.Column="1"  Margin="5">
+            <ListView.ItemTemplate>
+                <ItemContainerTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding Checking}" VerticalAlignment="Center" />
+                        <Label Content="{Binding}" VerticalAlignment="Center" />
+                    </StackPanel>
+                </ItemContainerTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Add these Abilities" Padding="15 10" Margin="5" Click="OnOkButtonClick" />
+            <Button Content="Cancel" Padding="15 10" Margin="5" Click="OnBackButtonClick" />
+        </StackPanel>
+
+    </Grid>
+</Window>

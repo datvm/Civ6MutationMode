@@ -2,7 +2,35 @@
 <Mod id="602a03bb-6944-4c69-bd97-d97bb8967c0b" version="1.1">
   <Properties>
     <Name>Mutation Mode - Civ and Leader Abilities Chooser</Name>
-    <Description><![CDATA[A Mutation Mode for Civ 6. This mod is the 2nd release after the Random Leader Abilities. To configure this mod, you need a separated (open source) app. You can download it here: <link placeholder>.]]></Description>
+    <Description><![CDATA[This mode changes the default Abilities (Traits) of the game.
+
+By default, without doing anything, the mod will assign random abilities for your Leader and keep the Civilization's abilities.
+
+You can achieve better random or manually assign abilities by using the following app:
+[list]
+[*] [url=https://github.com/datvm/Civ6MutationMode/releases/download/Release-v1.0/MutationMode-Release-v1.zip]Download app[/url]
+[*] [url=https://github.com/datvm/Civ6MutationMode/wiki/The-Civilizations-and-Leaders-Abilities-Chooser-app]Read more about using the app[/url]
+[/list]
+
+[img]https://i.imgur.com/Y9aFYus.png[/img]
+
+The mod and its app are [url=https://github.com/datvm/Civ6MutationMode]open source[/url]. You can post your suggestion, problems and feedbacks there, and also contribution as well. I will make my timeline about development of other mods there.
+
+[h1]Features of this mod[/h1]
+
+[list]
+[*] Auto randomly assign leader abilities if used without the app (similar to 1.2 version).
+[*] Better controlled random and manual abilities assignment
+[img]https://i.imgur.com/1QtxQJV.png[/img]
+[img]https://i.imgur.com/jAkdoWk.jpg[/img]
+[*] Profile/Seed for sharing and playing Multiplayer.
+[/list]
+
+[h1]Compatible[/h1]
+
+Both the Mod and App works well with other mods that give new Civilization/Leaders. For example, I use Sukritact's Narai and Ramkhamhaeng mods, both adding the Siam Civilization.
+
+However, when you add/remove a mod with new Civ/Leader, please load a map so DebugGameplay.sqlite get updated. Just create a new game and when you get into the Start screen, it's already done, you can use the app with the new Civ/Leader.]]></Description>
     <Authors>Luke Vo</Authors>
     <CompatibleVersions>2.0</CompatibleVersions>
 	<Teaser>Assign any leader and civilization abilities for your game.</Teaser>

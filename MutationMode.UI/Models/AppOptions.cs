@@ -16,6 +16,8 @@ namespace MutationMode.UI.Models
         public static readonly AppOptions Instance = new AppOptions();
 
         public string CacheLocationOverride { get; set; }
+        public string ModLocationOverride { get; set; }
+
         public int Seed { get; set; }
 
         public static string DefaultCacheLocation
@@ -25,6 +27,25 @@ namespace MutationMode.UI.Models
                 return Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                     @"my games\Sid Meier's Civilization VI\Cache");
+            }
+        }
+
+        public static string DefaultModLocation
+        {
+            get
+            {
+                return Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
+                    @"Steam\steamapps\workshop\content\289070\1742519440");
+            }
+        }
+
+        [JsonIgnore]
+        public string ModLocation
+        {
+            get
+            {
+                return this.ModLocationOverride ?? DefaultModLocation;
             }
         }
 

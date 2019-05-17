@@ -57,7 +57,7 @@ namespace MutationMode.UI.Models
 
                 neededValues[key] = result;
             };
-            
+
             foreach (var leader in leaders)
             {
                 tryAdd(leader.Name);
@@ -150,6 +150,18 @@ namespace MutationMode.UI.Models
             File.WriteAllText(@"D:\Temp\texts2.json", JsonConvert.SerializeObject(this.gameTexts));
         }
 
+        public async Task<List<TraitViewModel>> GetAllTraitsAsync()
+        {
+            using (var dc = this.GetGameplayContext())
+            {
+                return this.LookupTraitTexts(await dc.Traits
+                    .AsNoTracking()
+                    .OrderBy(q => q.TraitType)
+                    .ProjectTo<TraitViewModel>()
+                    .ToListAsync());
+            }
+        }
+
         public async Task<List<LeaderWithTraitsViewModel>> GetLeadersWithTraitsAsync(bool getValidOnly)
         {
             using (var dc = this.GetGameplayContext())
@@ -164,6 +176,7 @@ namespace MutationMode.UI.Models
                 }
 
                 var result = await query
+                    .OrderBy(q => q.LeaderType)
                     .ProjectTo<LeaderWithTraitsViewModel>()
                     .ToListAsync();
 
@@ -188,6 +201,7 @@ namespace MutationMode.UI.Models
                 }
 
                 var result = await query
+                    .OrderBy(q => q.CivilizationType)
                     .ProjectTo<CivWithTraitsViewModel>()
                     .ToListAsync();
 

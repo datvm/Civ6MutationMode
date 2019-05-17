@@ -30,30 +30,46 @@
 
         <ToolBarTray Grid.ColumnSpan="2">
             <ToolBar>
-                <Button Content="Save"></Button>
+                <Button Content="Apply to Mod" Click="OnApplyButtonClick" />
+            </ToolBar>
+            <ToolBar>
+                <Button Content="Import Profile" Click="OnOpenProfileButtonClick" />
+                <Button Content="Export Profile" Click="OnSaveProfileButtonClick" />
+            </ToolBar>
+            <ToolBar>
+                <Button Content="Revert to Default Mod File" Click="OnRevertButtonClick" />
             </ToolBar>
         </ToolBarTray>
 
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
-            <ListView x:Name="lstCivilizations" ItemsSource="{Binding Civs}" SelectionChanged="OnItemChanged" GotFocus="OnItemListGotFocus">
+            <TextBlock Text="Civilizations:" />
+            <ListView x:Name="lstCivilizations" ItemsSource="{Binding Civs}" SelectionChanged="OnItemChanged" GotFocus="OnItemListGotFocus" Grid.Row="1">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding}" Foreground="{Binding ForegroundColor}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <ListView x:Name="lstLeaders" ItemsSource="{Binding Leaders}" Grid.Row="1"  SelectionChanged="OnItemChanged" GotFocus="OnItemListGotFocus">
+            <Button Grid.Row="2" Content="Remove All Changes" Click="RemoveAllCivChanges" />
+
+            <TextBlock Grid.Row="3" Text="Leaders:" />
+            <ListView x:Name="lstLeaders" ItemsSource="{Binding Leaders}" Grid.Row="4"  SelectionChanged="OnItemChanged" GotFocus="OnItemListGotFocus">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding}" Foreground="{Binding ForegroundColor}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <Button Grid.Row="5" Content="Remove All Changes" Click="RemoveAllLeaderChanges" />
         </Grid>
 
         <ContentControl IsEnabled="{Binding ShouldEnableEdit}" Grid.Row="1" Grid.Column="1">

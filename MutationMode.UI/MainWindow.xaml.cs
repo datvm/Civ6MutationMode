@@ -1,7 +1,9 @@
-﻿using MutationMode.UI.Models;
+﻿using Microsoft.Win32;
+using MutationMode.UI.Models;
 using MutationMode.UI.Models.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,9 +42,48 @@ namespace MutationMode.UI
                 case Operation.RequestCacheLocation:
                     this.RequestCacheLocation();
                     break;
-                default:
+                case Operation.RequestModLocation:
+                    this.RequestModLocation();
                     break;
+                case Operation.AnnounceModAutoLocation:
+                    MessageBox.Show($"We detected mod location at: {e.Params[0]}. If it's incorrect, please change it in the settings.", this.Title, MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case Operation.ModFolderNotWritable:
+                    MessageBox.Show($"We detected the mod location at {e.Params[1]} but cannot write file there. We probably do not have the permission. If it's in Program Files folder, you may need" +
+                        $"to run the app with Administrator permission. Error:\r\n{e.Params[0]}", this.Title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    break;
+                case Operation.ImportProfileWarning:
+                    MessageBox.Show("Import Profile completed with some warnings:\r\n" + e.Params[0], this.Title, MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                    break;
+                default:
+                    throw new InvalidOperationException("Unknown Operation: " + e.Operation);
             }
+        }
+
+        private void RequestModLocation()
+        {
+            var needHelp = MessageBox.Show("Hey we cannot find the mod folder location. It's likely you didn't install the game at default location. " +
+                "We need you to give us the install location. Do you need help finding the location?", this.Title, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+            if (needHelp == MessageBoxResult.Yes)
+            {
+                Process.Start("https://github.com/datvm/Civ6MutationMode/wiki/Locate-Mod-folder-location");
+            }
+
+            var diagFolder = new System.Windows.Forms.FolderBrowserDialog()
+            {
+                SelectedPath = AppOptions.DefaultModLocation,
+                Description = "Select Mutation Mod folder",
+            };
+
+            if (diagFolder.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
+            {
+                this.Close();
+                return;
+            }
+
+            this.model.SetModLocationOverride(diagFolder.SelectedPath);
         }
 
         private void RequestCacheLocation()
@@ -131,6 +172,80 @@ namespace MutationMode.UI
         private void OnInvertSelectButtonClick(object sender, RoutedEventArgs e)
         {
             this.model.SetSelectInvert();
+        }
+
+        private void OnApplyButtonClick(object sender, RoutedEventArgs e)
+        {
+            this.model.ApplyModData();
+        }
+
+        private void OnSaveProfileButtonClick(object sender, RoutedEventArgs e)
+        {
+            var diagSave = new SaveFileDialog()
+            {
+                Title = "Choose a profile name to Export",
+                Filter = "Mutation Profile|*.mpf",
+                FileName = "profile.mpf",
+            };
+
+            if (diagSave.ShowDialog() != true)
+            {
+                return;
+            }
+
+            this.model.ExportProfile(diagSave.FileName);
+        }
+
+        private void OnOpenProfileButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("All current changes will be overriden. Make sure you save it if you want first. Continue?", this.Title, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            {
+                return;
+            }
+
+            var diagOpen = new OpenFileDialog()
+            {
+                Title = "Choose profile to import",
+                Filter = "Mutation Profile|*.mpf",
+            };
+
+            if (diagOpen.ShowDialog() != true)
+            {
+                return;
+            }
+
+            this.model.ImportProfile(diagOpen.FileName);
+        }
+
+        private void RemoveAllCivChanges(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure to delete all ability changes to Civilizations?", this.Title, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+            {
+                return;
+            }
+
+            this.model.RemoveAllCivChanges();
+        }
+
+        private void RemoveAllLeaderChanges(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure to delete all ability changes to Leaders?", this.Title, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+            {
+                return;
+            }
+
+            this.model.RemoveAllLeaderChanges();
+        }
+
+        private void OnRevertButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("This will revert the mod file to default so you can use the mod without this app. It will randomize the leader abilities whenever you start the game - similar to v1. " +
+                "You can always use this app and choose 'Apply to Mod' later. Continue?", this.Title, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+            {
+                return;
+            }
+
+            this.model.RevertToDefault();
         }
     }
 }

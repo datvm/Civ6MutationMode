@@ -7,12 +7,12 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MutationMode.UI")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Mutation Mode - Ability Chooser")]
+[assembly: AssemblyDescription("The app to configure the Civ 6 mod Mutation Mode")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MutationMode.UI")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
+[assembly: AssemblyCompany("Luke Vo")]
+[assembly: AssemblyProduct("Mutation Mode - Ability Chooser")]
+[assembly: AssemblyCopyright("Copyright © Luke Vo 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

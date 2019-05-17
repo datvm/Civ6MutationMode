@@ -7,7 +7,7 @@
     <ProjectGuid>{34703837-F75E-4B62-B676-0BA6AC19FC94}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>MutationMode.UI</RootNamespace>
-    <AssemblyName>MutationMode.UI</AssemblyName>
+    <AssemblyName>MutationModeConfig</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

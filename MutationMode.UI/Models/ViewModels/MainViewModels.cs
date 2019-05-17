@@ -220,15 +220,14 @@ namespace MutationMode.UI.Models.ViewModels
             }
         }
 
-        public void AddTraitsToSelectingItem(List<TraitViewModel> traits)
+        public void AddTraitsToItem(List<TraitViewModel> traits, BaseTraitSwap item)
         {
-            this.SelectingItem.SwappingTraits = this.SelectingItem.SwappingTraits ??
-                new ObservableCollection<TraitViewModelWithCheck>();
+            item.SwappingTraits = item.SwappingTraits ?? new ObservableCollection<TraitViewModelWithCheck>();
 
             foreach (var trait in traits)
             {
                 // Skip duplicate
-                if (this.SelectingItem.SwappingTraits.Any(q => q.TraitType == trait.TraitType))
+                if (item.SwappingTraits.Any(q => q.TraitType == trait.TraitType))
                 {
                     continue;
                 }
@@ -236,10 +235,15 @@ namespace MutationMode.UI.Models.ViewModels
                 var traitInfo = Mapper.Map<TraitViewModelWithCheck>(trait);
                 traitInfo.Checking = true;
 
-                this.SelectingItem.SwappingTraits.Add(traitInfo);
+                item.SwappingTraits.Add(traitInfo);
             }
 
-            this.SelectingItem.NotifyChange(nameof(this.SelectingItem.ForegroundColor));
+            item.NotifyChange(nameof(item.ForegroundColor));
+        }
+
+        public void AddTraitsToSelectingItem(List<TraitViewModel> traits)
+        {
+            this.AddTraitsToItem(traits, this.SelectingItem);
         }
 
         public void SelectItem(BaseTraitSwap item)
@@ -295,6 +299,13 @@ namespace MutationMode.UI.Models.ViewModels
 
             var changingLeaders = this.Leaders.Where(q => q.IsChanging).ToList();
             var changingCivs = this.Civs.Where(q => q.IsChanging).ToList();
+
+            content.AppendLine("DROP TABLE IF EXISTS OriginalLeaderTraits;");
+            content.AppendLine("DROP TABLE IF EXISTS OriginalCivilizationTraits;");
+            content.AppendLine("CREATE TABLE OriginalLeaderTraits(LeaderType TEXT NOT NULL, TraitType TEXT NOT NULL, PRIMARY KEY(LeaderType, TraitType));");
+            content.AppendLine("CREATE TABLE OriginalCivilizationTraits(CivilizationType TEXT NOT NULL, TraitType TEXT NOT NULL, PRIMARY KEY(CivilizationType, TraitType));");
+            content.AppendLine("INSERT INTO OriginalLeaderTraits SELECT LeaderType, TraitType FROM LeaderTraits;");
+            content.AppendLine("INSERT INTO OriginalCivilizationTraits SELECT CivilizationType, TraitType FROM CivilizationTraits;");
 
             content.AppendLine("DROP TABLE IF EXISTS MutationModeLeaders;");
             content.AppendLine("DROP TABLE IF EXISTS MutationModeCivs;");
@@ -499,14 +510,66 @@ namespace MutationMode.UI.Models.ViewModels
 
         public void Randomize(bool swapCivs, bool swapLeaders, int seed, bool addOrigins)
         {
-            var random = new Random(seed);
+            this.RemoveAllCivChanges();
+            this.RemoveAllLeaderChanges();
 
-            
+            if (swapCivs)
+            {
+                var random = new Random(seed);
+                this.SwapTraits(this.Civs, addOrigins, random);
+            }
+
+            if (swapLeaders)
+            {
+                var random = new Random(seed);
+                this.SwapTraits(this.Leaders, addOrigins, random);
+            }
         }
 
         private void SwapTraits(IEnumerable<BaseTraitSwap> items, bool addOrigins, Random random)
         {
+            var position = Enumerable.Range(0, items.Count()).ToList();
 
+            while (true)
+            {
+                for (int i = 0; i < position.Count; i++)
+                {
+                    var swapPos = random.Next(position.Count);
+
+                    var temp = position[i];
+                    position[i] = position[swapPos];
+                    position[swapPos] = temp;
+                }
+
+                // Check to make sure everyone is swapped
+                var ok = true;
+                for (int i = 0; i < position.Count; i++)
+                {
+                    if (position[i] == i)
+                    {
+                        ok = false;
+                        break;
+                    }
+                }
+
+                if (ok)
+                {
+                    break;
+                }
+            }
+
+            for (int i = 0; i < position.Count; i++)
+            {
+                var item = items.ElementAt(i);
+
+                if (addOrigins)
+                {
+                    this.AddTraitsToItem(item.OriginalTraits, item);
+                }
+
+                var swappingItem = items.ElementAt(position[i]);
+                this.AddTraitsToItem(swappingItem.OriginalTraits, item);
+            }
         }
 
         private void NotifyChange(string name)

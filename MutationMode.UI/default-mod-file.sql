@@ -1,3 +1,10 @@
+DROP TABLE IF EXISTS OriginalLeaderTraits;
+DROP TABLE IF EXISTS OriginalCivilizationTraits;
+CREATE TABLE OriginalLeaderTraits(LeaderType TEXT NOT NULL, TraitType TEXT NOT NULL, PRIMARY KEY(LeaderType, TraitType));
+CREATE TABLE OriginalCivilizationTraits(CivilizationType TEXT NOT NULL, TraitType TEXT NOT NULL, PRIMARY KEY(CivilizationType, TraitType));
+INSERT INTO OriginalLeaderTraits SELECT LeaderType, TraitType FROM LeaderTraits;
+INSERT INTO OriginalCivilizationTraits SELECT CivilizationType, TraitType FROM CivilizationTraits;
+
 INSERT OR IGNORE INTO GlobalParameters (Name, "Value") VALUES ('MUTATION_RANDOM_SEED', STRFTIME("%d%H%M%S"));
 
 DROP TABLE IF EXISTS OriginalValidLeaders;

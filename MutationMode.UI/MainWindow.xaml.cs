@@ -177,6 +177,8 @@ namespace MutationMode.UI
         private void OnApplyButtonClick(object sender, RoutedEventArgs e)
         {
             this.model.ApplyModData();
+
+            MessageBox.Show("Have fun! New changes apply when you load the match, even saves at mid-game. No need to restart the game.", this.Title, MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void OnSaveProfileButtonClick(object sender, RoutedEventArgs e)
@@ -246,6 +248,23 @@ namespace MutationMode.UI
             }
 
             this.model.RevertToDefault();
+        }
+
+        private void OnRandomizeButtonClick(object sender, RoutedEventArgs e)
+        {
+            var diagRandom = new RandomOptionsWindow();
+            if (diagRandom.ShowDialog() != true)
+            {
+                return;
+            }
+
+            this.model.Randomize(
+                diagRandom.RandomizeCiv,
+                diagRandom.RandomizeLeaders,
+                diagRandom.Seed,
+                diagRandom.KeepOriginal);
+
+            MessageBox.Show("Done. Remember to click Apply to Mod for the mod to take effect. It will affect save in mid-game too.", this.Title, MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

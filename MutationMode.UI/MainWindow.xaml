@@ -30,14 +30,16 @@
 
         <ToolBarTray Grid.ColumnSpan="2">
             <ToolBar>
+                <Button Content="Randomize" Click="OnRandomizeButtonClick" />
+                <Separator />
                 <Button Content="Apply to Mod" Click="OnApplyButtonClick" />
+                <Separator />
+                <Button Content="Revert to Default Mod File" Click="OnRevertButtonClick" />
             </ToolBar>
             <ToolBar>
                 <Button Content="Import Profile" Click="OnOpenProfileButtonClick" />
+                <Separator />
                 <Button Content="Export Profile" Click="OnSaveProfileButtonClick" />
-            </ToolBar>
-            <ToolBar>
-                <Button Content="Revert to Default Mod File" Click="OnRevertButtonClick" />
             </ToolBar>
         </ToolBarTray>
 

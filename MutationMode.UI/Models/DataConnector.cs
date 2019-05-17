@@ -180,6 +180,30 @@ namespace MutationMode.UI.Models
                     .ProjectTo<LeaderWithTraitsViewModel>()
                     .ToListAsync();
 
+                if (await this.IsTableExist("OriginalLeaderTraits", dc))
+                {
+                    var traits = await dc.Set<LeaderTrait>()
+                        .FromSql("SELECT * FROM OriginalLeaderTraits")
+                        .AsNoTracking()
+                        .ToListAsync();
+
+                    var allTraits = (await this.GetAllTraitsAsync())
+                        .ToDictionary(q => q.TraitType);
+
+                    foreach (var leader in result)
+                    {
+                        leader.LeaderTraits.Clear();
+
+                        foreach (var trait in traits)
+                        {
+                            if (trait.LeaderType == leader.LeaderType)
+                            {
+                                leader.LeaderTraits.Add(allTraits[trait.TraitType]);
+                            }
+                        }
+                    }
+                }
+
                 this.LookupLeaderTexts(result);
                 this.LookupTraitTexts(result.SelectMany(q => q.LeaderTraits).ToList());
 
@@ -204,6 +228,30 @@ namespace MutationMode.UI.Models
                     .OrderBy(q => q.CivilizationType)
                     .ProjectTo<CivWithTraitsViewModel>()
                     .ToListAsync();
+
+                if (await this.IsTableExist("OriginalCivilizationTraits", dc))
+                {
+                    var traits = await dc.Set<CivilizationTrait>()
+                        .FromSql("SELECT * FROM OriginalCivilizationTraits")
+                        .AsNoTracking()
+                        .ToListAsync();
+
+                    var allTraits = (await this.GetAllTraitsAsync())
+                        .ToDictionary(q => q.TraitType);
+
+                    foreach (var civ in result)
+                    {
+                        civ.CivilizationTraits.Clear();
+
+                        foreach (var trait in traits)
+                        {
+                            if (civ.CivilizationType == trait.CivilizationType)
+                            {
+                                civ.CivilizationTraits.Add(allTraits[trait.TraitType]);
+                            }
+                        }
+                    }
+                }
 
                 this.LookupCivTexts(result);
                 this.LookupTraitTexts(result.SelectMany(q => q.CivilizationTraits).ToList());
@@ -267,6 +315,32 @@ namespace MutationMode.UI.Models
         private string GetConnectionStringFromFile(string filePath)
         {
             return "Data Source=" + filePath;
+        }
+
+        private async Task<bool> IsTableExist(string tableName, DbContext dc)
+        {
+            var connection = dc.Database.GetDbConnection();
+
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = $"SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='{tableName}';";
+                
+                if (connection.State == System.Data.ConnectionState.Closed)
+                {
+                    connection.Open();
+                }
+
+                var scalar = await command.ExecuteScalarAsync();
+                var result = int.Parse(scalar.ToString());
+
+                if (connection.State == System.Data.ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+
+                return result > 0;
+            }
+
         }
 
         private GameplayContext GetGameplayContext()

@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mod id="333d8363-f745-4900-9794-1eac89c71eff" version="1">
+  <Properties>
+    <Name>Mutation Mode - Random Policy Card from Civics</Name>
+    <Description><![CDATA[A Mutation mode for Civ 6 game. When you start a game, all Policy Cards unlock Civics are randomly swapped. No OP or uselessness or balance guaranteed. There is no era limit, you may receive a Future Era card instead of Agoge for unlocking Craftsmanship.
+
+Everyone receive the same set of cards so it's OP or useless for everyone, but the AI probably does not know how to use them probably.
+
+More modern Policies are not obsolete by older Policies (for example, unlocking Agoge does not replace Feudal Contract if you already unlocked it first). I might want to change this in the future for more chaos.
+
+[h1]How random works[/h1]
+You can get consistent Policies swap everyday even if you start new game or load your save game. However, you get new random Policies every new day. You can change that by following these steps:
+
+- Go to your mod folder, it should be at steamapps\workshop\content\289070\<placeholder for id>.
+- You should see mutation-randomizer.sql file, open it with Notepad or any editor app you like.
+- Follow the instruction there to choose 1 of the 3 options explained there:
+
+[list]
+[*] Option 1: Use your own seed. You can also use this if you want to continue your save from yesterday. For example, today is May 15th 2019, but your save game is from May 13th 2019, you can use "20190513" as the seed and you can get the same game.
+[*] Option 2: Use random seed. This is the same as before the update: you get completely new ability whenever you load/start new game.
+[*] Option 3 (currently default): Use current system date as seed. Policies unlock change everyday. You can actually share the seed using today date and use Option 1 if you want to replay.
+[/list]
+	
+- Please remember to uncomment (remove the --) ONLY ONE INSERT line and comment (put the --) before any other lines.
+
+[h1]Known Issue[/h1]
+[list]
+[*] If the random seed change when you load the game (from a save), it will affect the save and you will have to assign new cards once you finish a new Civic. If you want to play with the same seed, please use Option 1 above or change your system time during save loading.
+[/list] ]]></Description>
+    <Authors>Luke Vo</Authors>
+    <CompatibleVersions>2.0</CompatibleVersions>
+	<Teaser>Policy Cards are randomly unlocked from Civics.</Teaser>
+  </Properties>
+  <InGameActions>
+    <UpdateDatabase id="MutationRandomizer">
+	  <Properties>
+        <LoadOrder>1</LoadOrder>
+      </Properties>
+      <File>mutation-randomizer.sql</File>
+    </UpdateDatabase>
+    <UpdateDatabase id="MutationRandomCards">
+	  <Properties>
+        <LoadOrder>999</LoadOrder>
+      </Properties>
+      <File>mutationmoderandomcards.sql</File>
+    </UpdateDatabase>
+  </InGameActions>
+  <Files>
+    <File>mutationmoderandomcards.sql</File>
+	<File>mutation-randomizer.sql</File>	
+  </Files>
+</Mod>

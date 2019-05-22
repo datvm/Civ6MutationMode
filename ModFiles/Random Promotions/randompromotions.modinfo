@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mod id="da67ae7c-56ef-410f-b56e-34671dce3b82" version="1">
+  <Properties>
+    <Name>Random Promotions</Name>
+    <Description><![CDATA[Most units will get random promotions upon leveling up instead up picking from the tree. You choose one out of three random promotions similar to Spies or Apostles. There is no level requirement now meaning you may get good promotions at early level if you are lucky. It also helps with your army's variety as the promotions should be unique before it runs out.
+
+When you have Military Research Policy card activated, you can choose from any promotion (similar to Hallyu and Non-state Action cards for Rock Band and Spies or Yerevan for Apostles). This decision may be a bit bias because I like that policy card. If you have any suggestion about this, please do tell.
+
+This includes non-popular classes like Warrior Monks and even with other mods that give units special promotion classes.]]></Description>
+    <Authors>Luke Vo</Authors>
+    <CompatibleVersions>2.0</CompatibleVersions>
+	<Teaser>Most units get random promotions instead of promotion tree.</Teaser>
+  </Properties>
+  <InGameActions>
+    <UpdateDatabase id="RandomPromotion">
+	  <Properties>
+        <LoadOrder>999</LoadOrder>
+      </Properties>
+      <File>randompromotions.sql</File>
+    </UpdateDatabase>
+  </InGameActions>
+  <Files>
+    <File>randompromotions.sql</File>
+  </Files>
+</Mod>
